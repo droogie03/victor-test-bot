@@ -4,7 +4,6 @@ import {
   SlashCommandBuilder,
   SlashCommandStringOption,
 } from "discord.js";
-import { createWriteStream, WriteStream, unlinkSync } from "fs";
 import ytdl from "@distube/ytdl-core";
 import { InteractionPlay } from "../../types";
 import { OPTION_URL } from "../constants";

@@ -1,17 +1,11 @@
-import {
-  CacheType,
-  Client,
-  CommandInteraction,
-  Events,
-  GatewayIntentBits,
-  Interaction,
-  MessageInteraction,
-} from "discord.js";
+import { Client, Events, GatewayIntentBits } from "discord.js";
 import { Player } from "discord-player";
 import { deployCommands } from "./deploy-commands";
 import { commands } from "./commands";
 import { config } from "./config";
 import { InteractionPlay } from "./types";
+import { useQueue } from "./commands/hooks/useQueue";
+import { QueueFunctions } from "./commands/hooks/types";
 
 const client = new Client({
   intents: [
@@ -20,6 +14,8 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
   ],
 });
+
+const queueService: QueueFunctions = useQueue();
 
 const player = new Player(client, {
   ytdlOptions: { quality: "highestaudio", highWaterMark: 1 << 25 },
@@ -42,7 +38,10 @@ client.on(Events.InteractionCreate, async (interaction: InteractionPlay) => {
     const { commandName } = interaction;
 
     if (commands[commandName as keyof typeof commands]) {
-      commands[commandName as keyof typeof commands].execute(interaction);
+      commands[commandName as keyof typeof commands].execute(
+        interaction,
+        queueService
+      );
     }
   } catch (error) {
     console.log(error);

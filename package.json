@@ -5,15 +5,16 @@
 	"main": "index.typescript",
 	"type": "module",
 	"engines": {
-		"node": "16.x"
+		"node": "21.x"
 	},
 	"scripts": {
-		"dev": "tsx watch index.ts",
+		"dev": "tsx watch index.ts || npm run dev-fail",
+		"dev-fail": "tsx watch index.ts || npm run dev",
 		"deploy": "tsx watch deploy-commands.ts",
 		"start": "node index.ts",
 		"build": "tsup index.ts --minify"
 	},
-	"author": "Shay DeWael",
+	"author": "Victor Ortega",
 	"license": "MIT",
 	"dependencies": {
 		"@discordjs/voice": "^0.17.0",

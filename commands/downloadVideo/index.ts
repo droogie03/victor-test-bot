@@ -4,17 +4,9 @@ import {
   SlashCommandBuilder,
   SlashCommandStringOption,
 } from "discord.js";
-import {
-  AudioPlayer,
-  AudioResource,
-  VoiceConnection,
-  createAudioPlayer,
-  createAudioResource,
-} from "@discordjs/voice";
-import { createWriteStream, WriteStream, unlinkSync } from "fs";
 import ytdl from "@distube/ytdl-core";
 import { InteractionPlay } from "../../types";
-import { connectVoiceChannel, getFormat } from "../services/services";
+import { getFormat } from "../services/services";
 import { OPTION_URL } from "../constants";
 
 export const data = new SlashCommandBuilder()

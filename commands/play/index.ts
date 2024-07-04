@@ -1,9 +1,4 @@
-import {
-  MessagePayload,
-  RawFile,
-  SlashCommandBuilder,
-  SlashCommandStringOption,
-} from "discord.js";
+import { SlashCommandBuilder, SlashCommandStringOption } from "discord.js";
 import {
   AudioPlayer,
   AudioResource,
@@ -16,6 +11,7 @@ import ytdl from "@distube/ytdl-core";
 import { InteractionPlay } from "../../types";
 import { OPTION_URL } from "../constants";
 import { connectVoiceChannel, getFormat } from "../services/services";
+import { QueueFunctions } from "../hooks/types";
 
 export const data = new SlashCommandBuilder()
   .setName("play")
@@ -24,8 +20,12 @@ export const data = new SlashCommandBuilder()
     option.setName(OPTION_URL).setDescription("youtube url to play.")
   );
 
-export async function execute(interaction: InteractionPlay) {
+export async function execute(
+  interaction: InteractionPlay,
+  queueService: QueueFunctions
+) {
   const { options } = interaction;
+  const { addClientQueue, currentSong } = queueService;
 
   const url: string = options.get(OPTION_URL)?.value?.toString() ?? "";
   if (!url) {
@@ -35,11 +35,9 @@ export async function execute(interaction: InteractionPlay) {
 
   try {
     const player: AudioPlayer = createAudioPlayer();
-
     const connection: VoiceConnection = await connectVoiceChannel(interaction);
 
     const { format, info } = await getFormat(interaction, url, "audio");
-
     const fileName: string = `${info.videoDetails.title}.mp3`;
 
     const read: WriteStream = ytdl
@@ -49,11 +47,16 @@ export async function execute(interaction: InteractionPlay) {
     read.on("finish", async () => {
       const resource: AudioResource<null> = createAudioResource(fileName);
       player.play(resource);
-      connection.subscribe(player);
 
-      await interaction.reply(`Ahi te pongo ${info.videoDetails.title}.`);
+      const currentVideoId: number | null = currentSong(interaction.channelId);
+      addClientQueue(interaction.channelId, player);
+      if (!currentVideoId) {
+        await interaction.reply(`Ahi te pongo ${info.videoDetails.title}.`);
+        connection.subscribe(player);
+      } else {
+        await interaction.reply("Cancion añadida a la lista :).");
+      }
       unlinkSync(fileName);
-      console.log("archivo borrado, proceso terminado.");
     });
   } catch (error) {
     console.log(error);
