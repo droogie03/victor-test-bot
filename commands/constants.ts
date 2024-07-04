@@ -11,7 +11,7 @@ export const FORMAT_OPTIONS: Record<
       .filterFormats(info.formats, "audioonly")
       .filter((value) => value.audioCodec !== "opus"),
   video: (info: ytdl.videoInfo) =>
-    ytdl.filterFormats(info.formats, "audioandvideo"),
+    ytdl.filterFormats(info.formats, "video").filter((value) => value.hasAudio),
 };
 
 export const FORMAT_RESPONSE: Record<
@@ -20,7 +20,7 @@ export const FORMAT_RESPONSE: Record<
 > = {
   audio: (formats: ytdl.videoFormat[]) =>
     ytdl.chooseFormat(formats, {
-      quality: "lowestaudio",
+      quality: "highestaudio",
     }),
   video: (formats: ytdl.videoFormat[]) => formats[0],
 };

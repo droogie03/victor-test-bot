@@ -38,7 +38,7 @@ export async function execute(interaction: InteractionPlay) {
 
     const fileName: string = `${info.videoDetails.title}.mp4`;
 
-    const file = ytdl(url);
+    const file = ytdl(url, { quality: "highest", filter: "audioandvideo" });
 
     await interaction.reply(
       `Ahora te descargo el video ${info.videoDetails.title} compadre.`

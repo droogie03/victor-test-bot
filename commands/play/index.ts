@@ -47,9 +47,6 @@ export async function execute(interaction: InteractionPlay) {
       .pipe(createWriteStream(fileName));
 
     read.on("finish", async () => {
-      const file = ytdl(url, {
-        quality: "lowestaudio",
-      });
       const resource: AudioResource<null> = createAudioResource(fileName);
       player.play(resource);
       connection.subscribe(player);
