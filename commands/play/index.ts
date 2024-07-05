@@ -1,6 +1,8 @@
 import { SlashCommandBuilder, SlashCommandStringOption } from "discord.js";
 import {
   AudioPlayer,
+  AudioPlayerState,
+  AudioPlayerStatus,
   AudioResource,
   VoiceConnection,
   createAudioPlayer,
@@ -25,7 +27,8 @@ export async function execute(
   queueService: QueueFunctions
 ) {
   const { options } = interaction;
-  const { addClientQueue, currentSong } = queueService;
+  const { addClientQueue, currentSong, nextSong, getMusicPlayer } =
+    queueService;
 
   const url: string = options.get(OPTION_URL)?.value?.toString() ?? "";
   if (!url) {
@@ -56,6 +59,24 @@ export async function execute(
       } else {
         await interaction.reply("Cancion añadida a la lista :).");
       }
+      player.on(
+        "stateChange",
+        async (_: AudioPlayerState, newState: AudioPlayerState) => {
+          if (newState.status === AudioPlayerStatus.Idle) {
+            nextSong(interaction.channelId);
+            const videoId: number | null = currentSong(interaction.channelId);
+
+            if (!videoId) {
+              await interaction.reply(
+                "No hay mas canciones añadidas. Si quieres pararlo sal con /stop"
+              );
+              return;
+            }
+            const newPlayer = getMusicPlayer(interaction.channelId, videoId);
+            connection.subscribe(newPlayer);
+          }
+        }
+      );
       unlinkSync(fileName);
     });
   } catch (error) {
