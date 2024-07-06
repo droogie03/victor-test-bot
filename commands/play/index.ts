@@ -65,13 +65,7 @@ export async function execute(
           if (newState.status === AudioPlayerStatus.Idle) {
             nextSong(interaction.channelId);
             const videoId: number | null = currentSong(interaction.channelId);
-
-            if (!videoId) {
-              await interaction.reply(
-                "No hay mas canciones añadidas. Si quieres pararlo sal con /stop"
-              );
-              return;
-            } else {
+            if (videoId) {
               const newPlayer = getMusicPlayer(interaction.channelId, videoId);
               connection.subscribe(newPlayer);
             }
