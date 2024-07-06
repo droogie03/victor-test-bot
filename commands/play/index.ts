@@ -71,9 +71,10 @@ export async function execute(
                 "No hay mas canciones añadidas. Si quieres pararlo sal con /stop"
               );
               return;
+            } else {
+              const newPlayer = getMusicPlayer(interaction.channelId, videoId);
+              connection.subscribe(newPlayer);
             }
-            const newPlayer = getMusicPlayer(interaction.channelId, videoId);
-            connection.subscribe(newPlayer);
           }
         }
       );
