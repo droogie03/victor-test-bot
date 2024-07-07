@@ -68,6 +68,8 @@ export async function execute(
             if (videoId) {
               const newPlayer = getMusicPlayer(interaction.channelId, videoId);
               connection.subscribe(newPlayer);
+            } else {
+              connection.disconnect();
             }
           }
         }
