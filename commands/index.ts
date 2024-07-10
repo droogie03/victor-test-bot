@@ -5,6 +5,7 @@ import * as downloadmp4 from "./downloadVideo/index";
 import * as next from "./nextSong/index";
 import * as pause from "./pause/index";
 import * as resume from "./resume/index";
+import * as cinco from "./cinco/index";
 
 export const commands = {
   play,
@@ -14,4 +15,5 @@ export const commands = {
   next,
   pause,
   resume,
+  cinco,
 };

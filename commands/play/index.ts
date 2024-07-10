@@ -74,7 +74,7 @@ export async function execute(
           }
         }
       );
-      unlinkSync(fileName);
+      //unlinkSync(fileName);
     });
   } catch (error) {
     console.log(error);
