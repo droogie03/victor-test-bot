@@ -2,7 +2,7 @@
 FROM node:21
 
 # Establece el directorio de trabajo dentro del contenedor
-WORKDIR /usr/src/app
+WORKDIR /
 
 # Copia los archivos de tu proyecto al contenedor
 COPY package*.json ./
@@ -15,4 +15,4 @@ COPY . .
 # EXPOSE 3000
 
 # Comando para ejecutar tu app
-CMD [ "node", "index.js" ]
+CMD [ "npm", "run", "dev" ]
