@@ -1,4 +1,4 @@
-import { Client, Events, GatewayIntentBits } from "discord.js";
+import { Channel, Client, Events, GatewayIntentBits } from "discord.js";
 import { Player } from "discord-player";
 import { deployCommands } from "./deploy-commands";
 import { commands } from "./commands";
@@ -37,6 +37,12 @@ client.on(Events.MessageCreate, async (message) => {
     message.guildId === config.GUILD_ID &&
     message.channelId === config.CHANNEL_ID
   ) {
+    let sendMessage = "";
+    if (message.embeds.length > 0) {
+      const embed = message.embeds[0];
+      sendMessage = embed.fields.map((f) => `${f.name}: ${f.value}`).join("\n");
+    }
+
     const url = `https://api.telegram.org/bot${config.BOT_TELEGRAM_TOKEN}/sendMessage`;
     for (const chatId of CHAT_IDS) {
       fetch(url, {
@@ -46,7 +52,7 @@ client.on(Events.MessageCreate, async (message) => {
         },
         body: JSON.stringify({
           chat_id: chatId,
-          text: message.content,
+          text: sendMessage,
         }),
       })
         .then((res) => res.json())
@@ -58,7 +64,9 @@ client.on(Events.MessageCreate, async (message) => {
         });
     }
   }
-  console.log("chatid", message)
+  console.log("embeds", message.embeds);
+  console.log("attachments", message.attachments);
+  console.log("chatid", message);
   console.log("message", message.content);
 });
 
