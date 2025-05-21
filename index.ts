@@ -16,7 +16,7 @@ const client = new Client({
   ],
 });
 
-const CHAT_IDS = ["117459607"];
+const CHAT_IDS = ["117459607", "-901699937"];
 const queueService: QueueFunctions = useQueue();
 
 const player = new Player(client, {
@@ -58,6 +58,7 @@ client.on(Events.MessageCreate, async (message) => {
         });
     }
   }
+  console.log("chatid", message)
   console.log("message", message.content);
 });
 
