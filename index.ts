@@ -49,6 +49,7 @@ client.on(Events.MessageCreate, async (message) => {
           text: message.content,
         }),
       })
+        .then((res) => res.json())
         .then((res) => {
           console.log("Mensaje enviado a Telegram");
         })

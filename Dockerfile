@@ -10,7 +10,7 @@ RUN npm install
 
 # Copia el resto de tu código
 COPY . .
-
+COPY .env .env
 # Expón el puerto si lo necesitas (opcional)
 # EXPOSE 3000
 
