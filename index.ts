@@ -6,6 +6,9 @@ import { config } from "./config";
 import { InteractionPlay } from "./types";
 import { useQueue } from "./commands/hooks/useQueue";
 import { QueueFunctions } from "./commands/hooks/types";
+import { createMessage } from "./utils";
+import { sendMessageTelegram } from "./telegram";
+import { Telegraf } from "telegraf";
 
 const client = new Client({
   intents: [
@@ -16,19 +19,8 @@ const client = new Client({
   ],
 });
 
-const regionMapUrls = {
-  Kanto:
-    "https://images.wikidexcdn.net/mwuploads/wikidex/5/5e/latest/20091128122013/Mapa_de_Kanto_en_Rojo_Fuego.png",
-  Johto:
-    "https://images.wikidexcdn.net/mwuploads/wikidex/4/43/latest/20090920215330/Johto_mapa_juegos.png",
-  Hoenn:
-    "https://images.wikidexcdn.net/mwuploads/wikidex/1/1c/latest/20141212181244/Mapa_Hoenn_juegos.png",
-  Sinnoh:
-    "https://images.wikidexcdn.net/mwuploads/wikidex/c/c7/latest/20211208122552/Mapa_Sinnoh_DBPR.png",
-  Unova:
-    "https://images.wikidexcdn.net/mwuploads/wikidex/d/dd/latest/20120710141029/Teselia2_mapa_juegos.png",
-};
-const CHAT_IDS = ["117459607", "-901699937"];
+const bot = new Telegraf(config.BOT_TELEGRAM_TOKEN);
+
 const queueService: QueueFunctions = useQueue();
 
 const player = new Player(client, {
@@ -36,46 +28,6 @@ const player = new Player(client, {
 });
 player.extractors.loadDefault((ext) => ext !== "YouTubeExtractor");
 
-const createMessage = (monsterName: string, region: string, route: string) => {
-  const pokeImg = `https://img.pokemondb.net/artwork/large/${monsterName.toLowerCase()}.jpg`;
-  return [
-    {
-      type: "photo",
-      media: pokeImg,
-    },
-    {
-      type: "photo",
-      media: regionMapUrls[region],
-      caption: `*¡${monsterName} ha aparecido!*\n📍 Región: ${region}\n🛣️ Ubicación: ${route}`,
-      parse_mode: "Markdown",
-    },
-  ];
-};
-
-const sendMessageTelegram = async (media) => {
-  const url = `https://api.telegram.org/bot${config.BOT_TELEGRAM_TOKEN}/sendMediaGroup`;
-  console.log(media);
-  for (const chatId of CHAT_IDS) {
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        chat_id: chatId,
-        media: media,
-        parse_mode: "Markdown",
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log("Imágenes y mensaje enviados.", res);
-      })
-      .catch((err) => {
-        console.error("Error al enviar a Telegram:", err.response.data);
-      });
-  }
-};
 client.once(Events.ClientReady, (readyClient) => {
   console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
@@ -104,12 +56,12 @@ client.on(Events.MessageCreate, async (message) => {
           monsterName = field.value;
       }
     }
-    sendMessageTelegram(createMessage(monsterName, region, location));
+    const messageTelegram = await createMessage(monsterName, region, location);
+    await sendMessageTelegram(messageTelegram);
   }
 });
 
 client.on(Events.InteractionCreate, async (interaction: InteractionPlay) => {
-  console.log("interaction", interaction);
   try {
     if (!interaction.isCommand()) {
       return;
@@ -126,4 +78,46 @@ client.on(Events.InteractionCreate, async (interaction: InteractionPlay) => {
   }
 });
 
+// Telegram bot
+
+bot.on("text", async (ctx) => {
+  const texto = ctx.message.text;
+  console.log("Texto recibido:", texto);
+  // Solo responde si lo mencionan
+  if (!texto.includes(`@${config.BOT_USERNAME}`)) return;
+
+  const prompt = ` ${texto
+    .replace(`@${config.BOT_USERNAME}`, "")
+    .trim()}`;
+
+  try {
+    const completion: any = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${config.IA_TOKEN}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://t.me/" + config.BOT_USERNAME,
+          "X-Title": "TelegramBot",
+        },
+        body: JSON.stringify({
+          model: "deepseek/deepseek-chat-v3-0324:free",
+          messages: [
+            { role: "system", content: "Eres un asistente de Pokemmo y quiero que contestes SOLO sobre Pokemmo y pokemon y en formato de Telegram, un texto plano con emojis, para poder enviarlo.Si el mensaje no tiene nada que ver con pokemon tienes que responder lo siguiente: 'Aqui solo se habla de pokemon', solo si el mensaje no tiene nada que ver con pokemon no añadas esto en ningun sitio de lo contrario." },
+            { role: "user", content: prompt },
+          ],
+          temperature: 0.7,
+        }),
+      }
+    ).then((res) => res.json());
+    const respuesta = completion.choices[0].message.content;
+    ctx.reply(respuesta);
+  } catch (err) {
+    console.error("Error al llamar a OpenRouter:", err.message);
+    ctx.reply("Hubo un error procesando tu pregunta.");
+  }
+});
+
 client.login(config.DISCORD_TOKEN);
+bot.launch();

@@ -5,3 +5,5 @@ export type DeployCommandsProps = {
 };
 
 export type InteractionPlay = Interaction<CacheType> & CommandInteraction;
+
+export type PokemonRegions = "Kanto" | "Johto" | "Hoenn" | "Sinnoh" | "Unova"
