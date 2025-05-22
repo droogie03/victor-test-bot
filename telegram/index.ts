@@ -1,4 +1,5 @@
 import { config } from "../config";
+import { CHAT_IDS } from "../constants";
 
 export const sendMessageTelegram = async (media) => {
   const url = `https://api.telegram.org/bot${config.BOT_TELEGRAM_TOKEN}/sendMediaGroup`;

@@ -1,4 +1,6 @@
 import { PokemonRegions } from "./types";
+import { REGIONMAPURLS } from "./constants";
+import { MISSIGNO_URL } from "./constants";
 
 const verifyPokemonUrl = (url: string): Promise<string> =>
   fetch(url).then((res) => {

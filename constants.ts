@@ -1,7 +1,7 @@
-const MISSIGNO_URL =
+export const MISSIGNO_URL =
   "https://static.wikia.nocookie.net/ficcion-sin-limites/images/c/c6/MissingNO.png/revision/latest?cb=20221106025744&path-prefix=es";
 
-const REGIONMAPURLS: Record<
+export const REGIONMAPURLS: Record<
   "Kanto" | "Johto" | "Hoenn" | "Sinnoh" | "Unova",
   string
 > = {
@@ -19,4 +19,4 @@ const REGIONMAPURLS: Record<
 
 
 //, "-901699937"
-const CHAT_IDS = ["117459607", "-901699937"];
+export const CHAT_IDS = ["117459607", "-901699937"];
