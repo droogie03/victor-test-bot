@@ -13,7 +13,7 @@ const verifyPokemonUrl = (url: string): Promise<string> =>
 
 const generatePokemonImageUrl = (pokemonName: string): Promise<string> =>
   verifyPokemonUrl(
-    `https://img.pokemondb.net/artwork/large/${pokemonName.toLowerCase()}.jpg`
+    `https://img.pokemondb.net/artwork/large/${pokemonName?.toLowerCase()}.jpg`
   );
 
 const generateRegionMapUrl = (region: PokemonRegions): Promise<string> =>

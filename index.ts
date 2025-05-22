@@ -49,10 +49,10 @@ client.on(Events.MessageCreate, async (message) => {
       const embed = message.embeds[0];
       sendMessage = embed.fields.map((f) => `${f.name}: ${f.value}`).join("\n");
       for (const field of embed.fields) {
-        if (field.name.toLowerCase().includes("region")) region = field.value;
-        if (field.name.toLowerCase().includes("location"))
+        if (field.name?.toLowerCase().includes("region")) region = field.value;
+        if (field.name?.toLowerCase().includes("location"))
           location = field.value;
-        if (field.name.toLowerCase().includes("monster name"))
+        if (field.name?.toLowerCase().includes("monster name"))
           monsterName = field.value;
       }
     }
