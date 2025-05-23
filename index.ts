@@ -57,7 +57,12 @@ client.on(Events.MessageCreate, async (message) => {
       }
     }
     const messageTelegram = await createMessage(monsterName, region, location);
-    await sendMessageTelegram(messageTelegram);
+    try {
+      await sendMessageTelegram(messageTelegram);
+    } catch (error) {
+      console.error("Error al enviar el mensaje a Telegram:", error);
+      await createMessage('missigno', 'Kanto', 'any')
+    }
   }
 });
 
@@ -86,9 +91,7 @@ bot.on("text", async (ctx) => {
   // Solo responde si lo mencionan
   if (!texto.includes(`@${config.BOT_USERNAME}`)) return;
 
-  const prompt = ` ${texto
-    .replace(`@${config.BOT_USERNAME}`, "")
-    .trim()}`;
+  const prompt = ` ${texto.replace(`@${config.BOT_USERNAME}`, "").trim()}`;
 
   try {
     const completion: any = await fetch(
@@ -104,7 +107,11 @@ bot.on("text", async (ctx) => {
         body: JSON.stringify({
           model: "deepseek/deepseek-chat-v3-0324:free",
           messages: [
-            { role: "system", content: "Eres un asistente de Pokemmo y quiero que contestes SOLO sobre Pokemmo y pokemon y en formato de Telegram, un texto plano con emojis, para poder enviarlo.Si el mensaje no tiene nada que ver con pokemon tienes que responder lo siguiente: 'Aqui solo se habla de pokemon', solo si el mensaje no tiene nada que ver con pokemon no añadas esto en ningun sitio de lo contrario." },
+            {
+              role: "system",
+              content:
+                "Eres un asistente de Pokemmo y quiero que contestes SOLO sobre Pokemmo y pokemon y en formato de Telegram, un texto plano con emojis, para poder enviarlo.Si el mensaje no tiene nada que ver con pokemon tienes que responder lo siguiente: 'Aqui solo se habla de pokemon', solo si el mensaje no tiene nada que ver con pokemon no añadas esto en ningun sitio de lo contrario.",
+            },
             { role: "user", content: prompt },
           ],
           temperature: 0.7,

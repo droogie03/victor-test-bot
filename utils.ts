@@ -9,7 +9,7 @@ const verifyPokemonUrl = (url: string): Promise<string> =>
     } else {
       return MISSIGNO_URL;
     }
-  });
+  }).catch((err) =>  MISSIGNO_URL);
 
 const generatePokemonImageUrl = (pokemonName: string): Promise<string> =>
   verifyPokemonUrl(
