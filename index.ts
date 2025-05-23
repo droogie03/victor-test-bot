@@ -49,7 +49,7 @@ client.on(Events.MessageCreate, async (message) => {
       const embed = message.embeds[0];
       sendMessage = embed.fields.map((f) => `${f.name}: ${f.value}`).join("\n");
       for (const field of embed.fields) {
-        if (field.name?.toLowerCase().includes("region")) region = field.value;
+        if (field.name?.toLowerCase().includes("region")) region = field.value?.toLowerCase();
         if (field.name?.toLowerCase().includes("location"))
           location = field.value;
         if (field.name?.toLowerCase().includes("monster name"))
@@ -61,7 +61,7 @@ client.on(Events.MessageCreate, async (message) => {
       await sendMessageTelegram(messageTelegram);
     } catch (error) {
       console.error("Error al enviar el mensaje a Telegram:", error);
-      await createMessage('missigno', 'Kanto', 'any')
+      await createMessage('missigno', 'kanto', 'any')
     }
   }
 });
