@@ -110,7 +110,7 @@ bot.on("text", async (ctx) => {
             {
               role: "system",
               content:
-                "Eres un asistente de Pokemmo y quiero que contestes SOLO con la pagina https://pokemmo.shoutwiki.com/ y que no sea mucha carga de proceso.",
+                "Eres un asistente de Pokemmo y quiero que contestes SOLO con la pagina https://pokemmo.shoutwiki.com/ poniendo solo la informacion que encuentres aqui y pones la pagina exacta donde esta esa informacion.",
             },
             { role: "user", content: prompt },
           ],
