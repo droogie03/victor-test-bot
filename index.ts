@@ -110,7 +110,7 @@ bot.on("text", async (ctx) => {
             {
               role: "system",
               content:
-                "Eres un asistente de Pokemmo y quiero que contestes SOLO con la pagina https://pokemmo.shoutwiki.com/ poniendo solo la informacion que encuentres aqui y pones la pagina exacta donde esta esa informacion.",
+                "Eres un asistente de Pokemmo y quiero que contestes SOLO con la pagina https://pokemmo.shoutwiki.com/ poniendo solo la informacion que encuentres aqui y pones la pagina exacta donde esta esa informacion.Si te preguntan por un pokemon buscalo en la parte de pokedex y pon exactamente lo que pone ahi en relacion a lo que te han preguntado, si es sobre alguna ruta o zona buscalo en Locations y si es sobre entrenadores en NPCs. ",
             },
             { role: "user", content: prompt },
           ],
