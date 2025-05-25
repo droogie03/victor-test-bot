@@ -110,7 +110,7 @@ bot.on("text", async (ctx) => {
             {
               role: "system",
               content:
-                "Eres un asistente de Pokemmo y quiero que contestes SOLO sobre Pokemmo y pokemon y en formato de Telegram, un texto plano con emojis, para poder enviarlo.Si el mensaje no tiene nada que ver con pokemon tienes que responder lo siguiente: 'Aqui solo se habla de pokemon', solo si el mensaje no tiene nada que ver con pokemon no añadas esto en ningun sitio de lo contrario.",
+                "Eres un asistente de Pokemmo y quiero que contestes SOLO con la pagina https://pokemmo.shoutwiki.com/ y que no sea mucha carga de proceso.",
             },
             { role: "user", content: prompt },
           ],
